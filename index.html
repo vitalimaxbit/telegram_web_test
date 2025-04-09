@@ -7,9 +7,23 @@
   <style>
     body { background: #121212; color: white; text-align: center; font-family: sans-serif; }
   </style>
+  <script>
+    function sendToBot() {
+      const payload = {
+        action: "submit_form",
+        username: document.getElementById("username").value,
+        email: document.getElementById("email").value
+      };
+  
+      Telegram.WebApp.sendData(JSON.stringify(payload));
+      Telegram.WebApp.close(); // закрывает WebApp (опционально)
+    }
+  </script>
 </head>
 <body>
-  <h1>Hello from GitHub Pages WebApp!</h1>
+  <input type="text" id="username" placeholder="Username" />
+  <input type="email" id="email" placeholder="Email" />
+  <button onclick="sendToBot()">Отправить боту</button>
   <button onclick="Telegram.WebApp.close()">Закрыть</button>
 </body>
 </html>
