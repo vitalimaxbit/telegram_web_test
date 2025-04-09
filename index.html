@@ -23,46 +23,36 @@
   <p> version 1</p>
   <input type="text" id="username" placeholder="Username" required>
   <input type="email" id="email" placeholder="Email" required>
-  <button onclick="sendToBot()">Отправить боту</button>
+  <button id="submitBtn">Отправить боту</button>
   <button onclick="Telegram.WebApp.close()">Закрыть</button>
 
   <script>
-    // Инициализация WebApp
     Telegram.WebApp.ready();
-    
-    // Добавляем обработчик отправки данных
-    Telegram.WebApp.onEvent('sendData', function(eventData) {
-      console.log('Данные успешно отправлены:', eventData);
-      Telegram.WebApp.close();
-    });
 
-    function sendToBot() {
-      // Валидация полей
-      const username = document.getElementById("username").value;
-      const email = document.getElementById("email").value;
+    const submitBtn = document.getElementById("submitBtn");
+    submitBtn.addEventListener("click", () => {
+      const username = document.getElementById("username").value.trim();
+      const email = document.getElementById("email").value.trim();
       
       if (!username || !email) {
-        alert("Заполните все поля!");
+        Telegram.WebApp.showAlert("Заполните все поля!");
         return;
       }
 
       const payload = {
         action: "submit_form",
-        username: username,
-        email: email
+        username,
+        email
       };
 
-      try {
-        // Отправка данных
-        Telegram.WebApp.sendData(JSON.stringify(payload));
-        
-        // Можно показать индикатор загрузки
-        Telegram.WebApp.MainButton.showProgress();
-      } catch (e) {
-        console.error("Ошибка отправки:", e);
-        Telegram.WebApp.showAlert("Ошибка отправки данных!");
-      }
-    }
+      // Показываем прогресс и скрываем кнопку
+      Telegram.WebApp.MainButton.setText("Отправка…");
+      Telegram.WebApp.MainButton.showProgress();
+      submitBtn.disabled = true;
+
+      // Отправляем данные боту
+      Telegram.WebApp.sendData(JSON.stringify(payload));
+    });
   </script>
 </body>
 </html>
